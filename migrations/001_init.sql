@@ -3,9 +3,16 @@
 CREATE TABLE IF NOT EXISTS users (
     id            BIGSERIAL PRIMARY KEY,
     username      VARCHAR(50) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255),
+    email         VARCHAR(255) UNIQUE,
+    google_id     VARCHAR(255) UNIQUE,
     created_at    TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Idempotent schema alterations for pre-existing databases
+ALTER TABLE users ALTER COLUMN password_hash DROP NOT NULL;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(255) UNIQUE;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS google_id VARCHAR(255) UNIQUE;
 
 CREATE TABLE IF NOT EXISTS urls (
     id            BIGSERIAL PRIMARY KEY,

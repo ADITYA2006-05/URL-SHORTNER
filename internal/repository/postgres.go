@@ -63,15 +63,62 @@ func (r *PostgresRepo) CreateUser(ctx context.Context, user *domain.User) error 
 func (r *PostgresRepo) GetUserByUsername(ctx context.Context, username string) (*domain.User, error) {
 	user := &domain.User{Username: username}
 	query := `
-		SELECT id, password_hash, created_at
+		SELECT id, COALESCE(password_hash, ''), created_at, COALESCE(email, ''), COALESCE(google_id, '')
 		FROM users
 		WHERE username = $1`
 
-	err := r.pool.QueryRow(ctx, query, username).Scan(&user.ID, &user.PasswordHash, &user.CreatedAt)
+	err := r.pool.QueryRow(ctx, query, username).Scan(&user.ID, &user.PasswordHash, &user.CreatedAt, &user.Email, &user.GoogleID)
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
+}
+
+// GetUserByGoogleID retrieves a user by their Google ID
+func (r *PostgresRepo) GetUserByGoogleID(ctx context.Context, googleID string) (*domain.User, error) {
+	user := &domain.User{GoogleID: googleID}
+	query := `
+		SELECT id, username, COALESCE(password_hash, ''), COALESCE(email, ''), created_at
+		FROM users
+		WHERE google_id = $1`
+
+	err := r.pool.QueryRow(ctx, query, googleID).Scan(&user.ID, &user.Username, &user.PasswordHash, &user.Email, &user.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+// GetUserByEmail retrieves a user by their email address
+func (r *PostgresRepo) GetUserByEmail(ctx context.Context, email string) (*domain.User, error) {
+	user := &domain.User{Email: email}
+	query := `
+		SELECT id, username, COALESCE(password_hash, ''), COALESCE(google_id, ''), created_at
+		FROM users
+		WHERE email = $1`
+
+	err := r.pool.QueryRow(ctx, query, email).Scan(&user.ID, &user.Username, &user.PasswordHash, &user.GoogleID, &user.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+// LinkGoogleAccount links a Google ID to an existing user account
+func (r *PostgresRepo) LinkGoogleAccount(ctx context.Context, userID int64, googleID string) error {
+	query := `UPDATE users SET google_id = $1 WHERE id = $2`
+	_, err := r.pool.Exec(ctx, query, googleID, userID)
+	return err
+}
+
+// CreateOAuthUser creates a new passwordless user from Google OAuth
+func (r *PostgresRepo) CreateOAuthUser(ctx context.Context, user *domain.User) error {
+	query := `
+		INSERT INTO users (username, password_hash, email, google_id)
+		VALUES ($1, NULL, $2, $3)
+		RETURNING id, created_at`
+
+	return r.pool.QueryRow(ctx, query, user.Username, user.Email, user.GoogleID).Scan(&user.ID, &user.CreatedAt)
 }
 
 // CreateURL inserts a new URL record and returns it with the generated ID

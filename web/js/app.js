@@ -38,6 +38,7 @@
     userNav:          $('#user-nav'),
     navUsername:      $('#nav-username'),
     logoutBtn:        $('#logout-button'),
+    googleLoginBtn:   $('#google-login-button'),
 
     // Shorten form
     shortenCard:    $('#shorten-card'),
@@ -670,6 +671,11 @@
     toggleAuthMode();
   });
   dom.logoutBtn.addEventListener('click', handleLogout);
+  if (dom.googleLoginBtn) {
+    dom.googleLoginBtn.addEventListener('click', () => {
+      window.location.href = `${API_BASE}/api/auth/google/login`;
+    });
+  }
 
   // Form submit
   dom.form.addEventListener('submit', (e) => {
@@ -739,6 +745,18 @@
   };
 
   // ---- Init ----
+  const params = new URLSearchParams(window.location.search);
+  const qToken = params.get('token');
+  const qUsername = params.get('username');
+  if (qToken && qUsername) {
+    token = qToken;
+    username = qUsername;
+    localStorage.setItem('snip_auth_token', token);
+    localStorage.setItem('snip_username', username);
+    window.history.replaceState({}, document.title, window.location.pathname);
+    showToast('Logged in with Google successfully!', 'success');
+  }
+
   updateViewState();
 
 })();

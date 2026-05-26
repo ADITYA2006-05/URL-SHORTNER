@@ -7,36 +7,42 @@ import (
 )
 
 type Config struct {
-	ServerPort    string
-	BaseURL       string
-	DBHost        string
-	DBPort        string
-	DBUser        string
-	DBPassword    string
-	DBName        string
-	DBSSLMode     string
-	RedisAddr     string
-	RedisPassword string
-	RedisDB       int
-	RateLimitRPM  int
-	JWTSecret     string
+	ServerPort         string
+	BaseURL            string
+	DBHost             string
+	DBPort             string
+	DBUser             string
+	DBPassword         string
+	DBName             string
+	DBSSLMode          string
+	RedisAddr          string
+	RedisPassword      string
+	RedisDB            int
+	RateLimitRPM       int
+	JWTSecret          string
+	GoogleClientID     string
+	GoogleClientSecret string
+	GoogleRedirectURL  string
 }
 
 func Load() *Config {
 	return &Config{
-		ServerPort:    getEnv("SERVER_PORT", "8080"),
-		BaseURL:       getEnv("BASE_URL", "http://localhost:8080"),
-		DBHost:        getEnv("DB_HOST", "localhost"),
-		DBPort:        getEnv("DB_PORT", "5432"),
-		DBUser:        getEnv("DB_USER", "postgres"),
-		DBPassword:    getEnv("DB_PASSWORD", "postgres"),
-		DBName:        getEnv("DB_NAME", "urlshortener"),
-		DBSSLMode:     getEnv("DB_SSLMODE", "disable"),
-		RedisAddr:     getEnv("REDIS_ADDR", "localhost:6379"),
-		RedisPassword: getEnv("REDIS_PASSWORD", ""),
-		RedisDB:       getEnvInt("REDIS_DB", 0),
-		RateLimitRPM:  getEnvInt("RATE_LIMIT_RPM", 100),
-		JWTSecret:     getEnv("JWT_SECRET", "super-secret-development-key-change-in-production"),
+		ServerPort:         getEnv("SERVER_PORT", "8080"),
+		BaseURL:            getEnv("BASE_URL", "http://localhost:8080"),
+		DBHost:             getEnv("DB_HOST", "localhost"),
+		DBPort:             getEnv("DB_PORT", "5432"),
+		DBUser:             getEnv("DB_USER", "postgres"),
+		DBPassword:         getEnv("DB_PASSWORD", "postgres"),
+		DBName:             getEnv("DB_NAME", "urlshortener"),
+		DBSSLMode:          getEnv("DB_SSLMODE", "disable"),
+		RedisAddr:          getEnv("REDIS_ADDR", "localhost:6379"),
+		RedisPassword:      getEnv("REDIS_PASSWORD", ""),
+		RedisDB:            getEnvInt("REDIS_DB", 0),
+		RateLimitRPM:       getEnvInt("RATE_LIMIT_RPM", 100),
+		JWTSecret:          getEnv("JWT_SECRET", "super-secret-development-key-change-in-production"),
+		GoogleClientID:     getEnv("GOOGLE_CLIENT_ID", ""),
+		GoogleClientSecret: getEnv("GOOGLE_CLIENT_SECRET", ""),
+		GoogleRedirectURL:  getEnv("GOOGLE_REDIRECT_URL", ""),
 	}
 }
 

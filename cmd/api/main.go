@@ -67,7 +67,7 @@ func main() {
 
 	// 6. Initialize Handlers and Middleware
 	urlHandler := handler.NewURLHandler(svc)
-	authHandler := handler.NewAuthHandler(pgRepo, cfg.JWTSecret)
+	authHandler := handler.NewAuthHandler(pgRepo, cfg)
 	redirectHandler := handler.NewRedirectHandler(svc)
 	mw := handler.NewMiddleware(redisRepo, cfg.RateLimitRPM, cfg.JWTSecret)
 
@@ -100,6 +100,8 @@ func main() {
 		// Public Auth Endpoints
 		r.Post("/register", authHandler.Register)
 		r.Post("/login", authHandler.Login)
+		r.Get("/auth/google/login", authHandler.GoogleLogin)
+		r.Get("/auth/google/callback", authHandler.GoogleCallback)
 		r.Get("/health", urlHandler.HealthCheck)
 
 		// Protected endpoints (Require Auth token)
