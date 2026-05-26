@@ -13,7 +13,7 @@
                    window.location.hostname === '' || 
                    window.location.protocol === 'file:'
     ? 'http://localhost:8080'
-    : 'https://url-shortener-backend-service.onrender.com'; // <-- REPLACE with your actual deployed Render backend URL
+    : 'https://url-shortner-gou3.onrender.com';
   const STORAGE_KEY = 'snip_recent_urls';
 
   // Auth State
