@@ -2,7 +2,9 @@ package repository
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -15,11 +17,20 @@ type RedisRepo struct {
 
 // NewRedisRepo creates a new Redis repository
 func NewRedisRepo(addr, password string, db int) (*RedisRepo, error) {
-	client := redis.NewClient(&redis.Options{
+	opts := &redis.Options{
 		Addr:     addr,
 		Password: password,
 		DB:       db,
-	})
+	}
+
+	// Dynamically enable TLS/SSL for secure cloud hosts (like Upstash)
+	if strings.Contains(addr, "upstash.io") || strings.Contains(addr, "rediss://") {
+		opts.TLSConfig = &tls.Config{
+			MinVersion: tls.VersionTLS12,
+		}
+	}
+
+	client := redis.NewClient(opts)
 
 	// Test connection
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
