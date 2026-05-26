@@ -20,9 +20,6 @@ type Config struct {
 	RedisDB            int
 	RateLimitRPM       int
 	JWTSecret          string
-	GoogleClientID     string
-	GoogleClientSecret string
-	GoogleRedirectURL  string
 }
 
 func Load() *Config {
@@ -40,9 +37,6 @@ func Load() *Config {
 		RedisDB:            getEnvInt("REDIS_DB", 0),
 		RateLimitRPM:       getEnvInt("RATE_LIMIT_RPM", 100),
 		JWTSecret:          getEnv("JWT_SECRET", "super-secret-development-key-change-in-production"),
-		GoogleClientID:     getEnv("GOOGLE_CLIENT_ID", ""),
-		GoogleClientSecret: getEnv("GOOGLE_CLIENT_SECRET", ""),
-		GoogleRedirectURL:  getEnv("GOOGLE_REDIRECT_URL", ""),
 	}
 }
 
