@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snip — URL Shortener</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ===== Toast Container ===== -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- ===== Hero Section ===== -->
+  <header class="hero" id="hero-section">
+    <div class="hero__bg-shapes">
+      <span class="hero__shape hero__shape--circle"></span>
+      <span class="hero__shape hero__shape--donut"></span>
+      <span class="hero__shape hero__shape--square"></span>
+      <span class="hero__shape hero__shape--triangle"></span>
+    </div>
+
+    <div class="container hero__content">
+      <h1 class="hero__title" id="hero-title">Snip it. Share it.</h1>
+      <p class="hero__subtitle">
+        Turn impossibly long URLs into tiny,<br />
+        <span class="hero__subtitle-accent">beautiful links</span> ✨
+      </p>
+      
+      <!-- User Navigation (hidden by default) -->
+      <div id="user-nav" class="user-nav" hidden>
+        <span class="user-nav__welcome">Hi, <strong id="nav-username"></strong>! 👋</span>
+        <button id="logout-button" class="btn btn--logout" title="Log out of your account">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Main Content ===== -->
+  <main class="main-content container">
+
+    <!-- Auth Card (Login/Signup) -->
+    <section class="card auth-card" id="auth-card" aria-label="Sign in or register">
+      <div class="auth-card__header">
+        <h2 class="auth-card__title" id="auth-title">Welcome Back</h2>
+        <p class="auth-card__subtitle" id="auth-subtitle">Login to access your personal links</p>
+      </div>
+      
+      <form id="auth-form" autocomplete="off">
+        <div class="auth-card__input-group">
+          <label for="auth-username" class="shorten-card__label">Username</label>
+          <input
+            type="text"
+            id="auth-username"
+            class="shorten-card__alias-input"
+            style="width: 100%; border-radius: 12px;"
+            placeholder="Choose a cool username"
+            required
+            minlength="3"
+            maxlength="30"
+          />
+        </div>
+        
+        <div class="auth-card__input-group" style="margin-top: 1rem;">
+          <label for="auth-password" class="shorten-card__label">Password</label>
+          <input
+            type="password"
+            id="auth-password"
+            class="shorten-card__alias-input"
+            style="width: 100%; border-radius: 12px;"
+            placeholder="Keep it secret, keep it safe"
+            required
+            minlength="6"
+          />
+        </div>
+        
+        <button type="submit" id="auth-submit-button" class="btn btn--primary" style="width: 100%; margin-top: 1.5rem; justify-content: center;">
+          <span class="btn__text">Log In</span>
+          <span class="btn__loader" hidden>
+            <span class="spinner"></span>
+          </span>
+        </button>
+        
+        <div class="auth-card__toggle-wrap">
+          <a href="#" id="auth-toggle-link" class="auth-card__toggle-link">Need an account? Sign up</a>
+        </div>
+      </form>
+    </section>
+
+    <!-- URL Input Card -->
+    <section class="card shorten-card" id="shorten-card" aria-label="Shorten a URL">
+      <form id="shorten-form" autocomplete="off">
+        <div class="shorten-card__input-row">
+          <div class="shorten-card__input-wrap">
+            <svg class="shorten-card__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <input
+              type="url"
+              id="url-input"
+              class="shorten-card__input"
+              placeholder="Paste your loooong URL here…"
+              required
+              aria-label="URL to shorten"
+            />
+            <button type="button" id="paste-button" class="shorten-card__paste-btn" title="Paste from clipboard" aria-label="Paste from clipboard">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+          <button type="submit" id="shorten-button" class="btn btn--primary shorten-card__submit">
+            <span class="btn__text">Snip it!</span>
+            <span class="btn__loader" hidden>
+              <span class="spinner"></span>
+            </span>
+          </button>
+        </div>
+
+        <!-- Collapsible Options Panel -->
+        <button type="button" id="options-toggle" class="shorten-card__options-toggle" aria-expanded="false" aria-controls="options-panel">
+          <svg class="shorten-card__options-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Custom options</span>
+          <svg class="shorten-card__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+
+        <div id="options-panel" class="shorten-card__options" hidden>
+          <div class="shorten-card__option-group">
+            <label for="custom-alias" class="shorten-card__label">Custom alias</label>
+            <div class="shorten-card__alias-wrap">
+              <span class="shorten-card__alias-prefix" id="alias-prefix">yoursite.co/</span>
+              <input
+                type="text"
+                id="custom-alias"
+                class="shorten-card__alias-input"
+                placeholder="my-cool-link"
+                pattern="[a-zA-Z0-9_-]+"
+                maxlength="32"
+                aria-label="Custom alias for short URL"
+              />
+            </div>
+          </div>
+          <div class="shorten-card__option-group">
+            <label for="expiry-select" class="shorten-card__label">Link expiry</label>
+            <select id="expiry-select" class="shorten-card__select" aria-label="Link expiration time">
+              <option value="">Never</option>
+              <option value="1h">1 hour</option>
+              <option value="24h">24 hours</option>
+              <option value="7d">7 days</option>
+              <option value="30d">30 days</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- Result Card (hidden by default) -->
+    <section class="card result-card" id="result-card" hidden aria-label="Shortened URL result">
+      <div class="result-card__badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Link created!</span>
+      </div>
+
+      <div class="result-card__url-row">
+        <a href="#" id="result-short-url" class="result-card__short-url" target="_blank" rel="noopener noreferrer"></a>
+        <button type="button" id="copy-result-button" class="btn btn--copy" aria-label="Copy short URL">
+          <svg class="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" hidden><polyline points="20 6 9 17 4 12"/></svg>
+          <span class="btn__label">Copy</span>
+        </button>
+      </div>
+
+      <div class="result-card__meta">
+        <span class="result-card__meta-item" id="result-clicks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span>0 clicks</span>
+        </span>
+        <span class="result-card__meta-item" id="result-expiry">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>Never expires</span>
+        </span>
+      </div>
+    </section>
+
+    <!-- Recent URLs Section -->
+    <section class="recent-section" id="recent-section" aria-label="Recent shortened URLs">
+      <div class="recent-section__header">
+        <h2 class="recent-section__title">Your recent links</h2>
+        <span class="recent-section__count" id="recent-count"></span>
+      </div>
+
+      <!-- Skeleton loaders (shown while loading) -->
+      <div id="recent-skeleton" class="recent-skeleton" hidden>
+        <div class="skeleton-card"><div class="skeleton-line skeleton-line--short"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--medium"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line skeleton-line--short"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--medium"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line skeleton-line--short"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--medium"></div></div>
+      </div>
+
+      <!-- Empty state -->
+      <div id="recent-empty" class="recent-empty" hidden>
+        <div class="recent-empty__icon">✂️</div>
+        <p class="recent-empty__text">No links yet — go snip one!</p>
+      </div>
+
+      <!-- URL cards container -->
+      <div id="recent-urls-list" class="recent-urls-list"></div>
+    </section>
+  </main>
+
+  <!-- ===== Analytics Modal ===== -->
+  <div class="modal-overlay" id="analytics-modal" hidden aria-modal="true" role="dialog" aria-labelledby="modal-title">
+    <div class="modal" id="analytics-modal-content">
+      <header class="modal__header">
+        <h2 class="modal__title" id="modal-title">Link Analytics</h2>
+        <button type="button" id="modal-close-button" class="modal__close" aria-label="Close analytics modal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </header>
+
+      <div class="modal__body" id="modal-body">
+        <!-- Total Clicks -->
+        <div class="modal__stat-hero" id="modal-total-clicks">
+          <span class="modal__stat-number">0</span>
+          <span class="modal__stat-label">total clicks</span>
+        </div>
+
+        <!-- Clicks Over Time Chart -->
+        <section class="modal__section">
+          <h3 class="modal__section-title">Clicks over time</h3>
+          <div class="bar-chart" id="modal-clicks-chart">
+            <p class="bar-chart__empty">No click data yet</p>
+          </div>
+        </section>
+
+        <!-- Device Breakdown -->
+        <section class="modal__section">
+          <h3 class="modal__section-title">Devices</h3>
+          <div class="breakdown-list" id="modal-devices"></div>
+        </section>
+
+        <!-- Browser Breakdown -->
+        <section class="modal__section">
+          <h3 class="modal__section-title">Browsers</h3>
+          <div class="breakdown-list" id="modal-browsers"></div>
+        </section>
+
+        <!-- Top Referrers -->
+        <section class="modal__section">
+          <h3 class="modal__section-title">Top referrers</h3>
+          <ul class="referrer-list" id="modal-referrers">
+            <li class="referrer-list__empty">No referrer data yet</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer" id="site-footer">
+    <div class="container footer__inner">
+      <p class="footer__tagline">made with a little bit of magic ✨</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
