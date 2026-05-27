@@ -41,12 +41,12 @@ type Click struct {
 
 // URLStats represents analytics for a URL
 type URLStats struct {
-	URL              URL              `json:"url"`
-	TotalClicks      int64            `json:"total_clicks"`
-	ClicksPerDay     []DailyClicks    `json:"clicks_per_day"`
-	TopReferers      []RefererCount   `json:"top_referers"`
-	DeviceBreakdown  []DeviceCount    `json:"device_breakdown"`
-	BrowserBreakdown []BrowserCount   `json:"browser_breakdown"`
+	URL              URL            `json:"url"`
+	TotalClicks      int64          `json:"total_clicks"`
+	ClicksPerDay     []DailyClicks  `json:"clicks_per_day"`
+	TopReferers      []RefererCount `json:"top_referers"`
+	DeviceBreakdown  []DeviceCount  `json:"device_breakdown"`
+	BrowserBreakdown []BrowserCount `json:"browser_breakdown"`
 }
 
 // DailyClicks represents clicks per day

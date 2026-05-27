@@ -100,12 +100,14 @@ func main() {
 		// Public Auth Endpoints
 		r.Post("/register", authHandler.Register)
 		r.Post("/login", authHandler.Login)
+		r.Get("/auth/google/login", authHandler.GoogleLogin)
+		r.Get("/auth/google/callback", authHandler.GoogleCallback)
 		r.Get("/health", urlHandler.HealthCheck)
 
 		// Protected endpoints (Require Auth token)
 		r.Group(func(r chi.Router) {
 			r.Use(mw.Auth)
-			
+
 			r.Post("/shorten", urlHandler.ShortenURL)
 			r.Get("/urls", urlHandler.ListURLs)
 			r.Get("/urls/{code}/stats", urlHandler.GetURLStats)

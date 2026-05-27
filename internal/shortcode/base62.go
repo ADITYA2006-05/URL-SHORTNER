@@ -55,7 +55,7 @@ func IsValidAlias(alias string) bool {
 	if len(alias) < 3 || len(alias) > 20 {
 		return false
 	}
-	
+
 	// Reserved words
 	reserved := map[string]bool{
 		"api": true, "admin": true, "health": true,
@@ -65,7 +65,7 @@ func IsValidAlias(alias string) bool {
 	if reserved[strings.ToLower(alias)] {
 		return false
 	}
-	
+
 	for _, c := range alias {
 		if !strings.ContainsRune(alphabet+"-_", c) {
 			return false

@@ -38,6 +38,7 @@
     userNav:          $('#user-nav'),
     navUsername:      $('#nav-username'),
     logoutBtn:        $('#logout-button'),
+    googleLoginBtn:   $('#google-login-button'),
     // Shorten form
     shortenCard:    $('#shorten-card'),
     form:           $('#shorten-form'),
@@ -669,6 +670,11 @@
     toggleAuthMode();
   });
   dom.logoutBtn.addEventListener('click', handleLogout);
+  if (dom.googleLoginBtn) {
+    dom.googleLoginBtn.addEventListener('click', () => {
+      window.location.href = `${API_BASE}/api/auth/google/login`;
+    });
+  }
   // Form submit
   dom.form.addEventListener('submit', (e) => {
     e.preventDefault();

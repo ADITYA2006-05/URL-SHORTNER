@@ -15,10 +15,10 @@ import (
 
 // URLService handles URL shortening business logic
 type URLService struct {
-	pgRepo     *repository.PostgresRepo
-	redisRepo  *repository.RedisRepo
-	baseURL    string
-	clickChan  chan *domain.Click
+	pgRepo    *repository.PostgresRepo
+	redisRepo *repository.RedisRepo
+	baseURL   string
+	clickChan chan *domain.Click
 }
 
 // NewURLService creates a new URL service

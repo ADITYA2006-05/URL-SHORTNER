@@ -143,7 +143,7 @@ func (h *URLHandler) GetURLStats(w http.ResponseWriter, r *http.Request) {
 // HealthCheck handles GET /api/health
 func (h *URLHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, map[string]string{
-		"status": "healthy",
+		"status":  "healthy",
 		"service": "url-shortener",
 	})
 }
